@@ -6,6 +6,9 @@
 //	second-command-to-execute arguments
 //
 
+//Instruct that all rules should be run when the watcher starts
+#runall
+
 Source/*.css
 //If the first command line in a ruleset starts with #!
 //that file will be executed and passed all remaining lines via stdin

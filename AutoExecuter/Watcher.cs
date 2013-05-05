@@ -12,7 +12,7 @@ namespace SilentOrbit.AutoExecuter
         readonly FileSystemWatcher rulesWatcher;
         readonly string rulesPath;
         int rulesPathExitCode = -1;
-        List<Rule> rules;
+        Rules rules;
 
         /// <summary>
         /// Signal that a file has changed and a new check should be done
@@ -74,7 +74,7 @@ namespace SilentOrbit.AutoExecuter
                 }
 
                 //Scan all filters
-                foreach (Rule r in rules)
+                foreach (Rule r in rules.List)
                 {
                     if (FileSystem.Modified(r, lastRun) == false)
                         continue;
@@ -89,7 +89,7 @@ namespace SilentOrbit.AutoExecuter
                 int failed = 0;
                 if (rulesPathExitCode != 0)
                     failed += 1;
-                foreach (Rule r in rules)
+                foreach (Rule r in rules.List)
                 {
                     if (r.ExitCode != 0)
                         failed += 1;
@@ -125,16 +125,19 @@ namespace SilentOrbit.AutoExecuter
             {
                 Console.Error.WriteLine(e.Message);
                 rulesPathExitCode = -1;
-                rules = new List<Rule>();
+                rules = new Rules();
             }
 
             //Stop previous watchers
             foreach(var w in watchers)
                 w.Dispose();
 
+            if(rules.RunAllAtStart)
+                lastRun = DateTime.MinValue;
+
             //Set new filewatchers
             List<string> watched = new List<string>();
-            foreach(var r in rules)
+            foreach(var r in rules.List)
             {
                 foreach(var f in r.Files)
                 {

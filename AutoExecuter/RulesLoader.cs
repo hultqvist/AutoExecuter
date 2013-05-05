@@ -8,7 +8,7 @@ namespace SilentOrbit.AutoExecuter
 {
     public static class RulesLoader
     {
-        public static List<Rule> FromFile(string path)
+        public static Rules FromFile(string path)
         {
             string dir = Path.GetDirectoryName(path);
             using(FileStream fs = new FileStream(path, FileMode.Open))
@@ -22,9 +22,10 @@ namespace SilentOrbit.AutoExecuter
         /// <returns>The text reader.</returns>
         /// <param name="reader"></param>
         /// <param name="path">Base path, location of rules file</param>
-        static List<Rule> FromTextReader(TextReader reader, string path)
+        static Rules FromTextReader(TextReader reader, string path)
         {
-            var list = new List<Rule>();
+            var rules = new Rules();
+            var list = rules.List;
 
             Rule r = null;
             string line;
@@ -32,10 +33,15 @@ namespace SilentOrbit.AutoExecuter
             {
                 line = reader.ReadLine();
                 if (line == null) //EOF
-                    return list;
+                    return rules;
 
-                if (line.StartsWith("#")) //to ignore first #!/... in autoex script file
+                if (line.StartsWith("#!")) //to ignore first #!/... in autoex script file
                     continue; //Ignore comments
+                if (line.StartsWith("#runall"))
+                {
+                    rules.RunAllAtStart = true;
+                    continue; //Ignore comments
+                }
 
                 string lineTrim = line.Trim(' ', '\t');
                 if (lineTrim.StartsWith("//"))

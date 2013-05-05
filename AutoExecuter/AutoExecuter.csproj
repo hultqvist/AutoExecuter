@@ -45,6 +45,7 @@
     <Compile Include="Watcher.cs" />
     <Compile Include="Executer.cs" />
     <Compile Include="ColorConsole.cs" />
+    <Compile Include="RuleData\Rules.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
