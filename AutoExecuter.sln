@@ -5,14 +5,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoExecuter", "AutoExecute
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
-		Release|x86 = Release|x86
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DBFFA7D0-F7D5-47E1-9BA0-C17F3FE2428E}.Debug|x86.ActiveCfg = Debug|x86
-		{DBFFA7D0-F7D5-47E1-9BA0-C17F3FE2428E}.Debug|x86.Build.0 = Debug|x86
-		{DBFFA7D0-F7D5-47E1-9BA0-C17F3FE2428E}.Release|x86.ActiveCfg = Release|x86
-		{DBFFA7D0-F7D5-47E1-9BA0-C17F3FE2428E}.Release|x86.Build.0 = Release|x86
+		{DBFFA7D0-F7D5-47E1-9BA0-C17F3FE2428E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBFFA7D0-F7D5-47E1-9BA0-C17F3FE2428E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBFFA7D0-F7D5-47E1-9BA0-C17F3FE2428E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBFFA7D0-F7D5-47E1-9BA0-C17F3FE2428E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = AutoExecuter\AutoExecuter.csproj
