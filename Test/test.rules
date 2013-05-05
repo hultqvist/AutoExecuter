@@ -1,0 +1,17 @@
+#!/usr/local/bin/autoex
+// Rules have the format:
+//Path/To/Directory/To/Watch/Filename.with.pattern.*
+//Path/To/SecondDirectory/To/Watch/Filename.with.pattern.*
+//	command-to-execute arguments
+//	second-command-to-execute arguments
+//
+
+Source/*.css
+//If the first command line in a ruleset starts with #!
+//that file will be executed and passed all remaining lines via stdin
+	#!/bin/bash
+	cat Source/*.css > Combined.css
+
+Combined.css
+	cp Combined.css final.css
+	cp Combined.css final2.css
