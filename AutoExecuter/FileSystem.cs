@@ -27,7 +27,7 @@ namespace SilentOrbit.AutoExecuter
                 if (date > un)
                     break;
 
-                //Console.WriteLine("Waiting");
+                //ColorConsole.WriteLine("Waiting");
                 Thread.Sleep(1000);
                 File.SetLastWriteTimeUtc(path, DateTime.UtcNow);
             }

@@ -5,11 +5,11 @@ using System.IO;
 
 namespace SilentOrbit.AutoExecuter
 {
-    public class Executioner
+    public class Executer
     {
         readonly string basePath;
 
-        public Executioner(string basePath)
+        public Executer(string basePath)
         {
             this.basePath = basePath;
         }
@@ -19,7 +19,7 @@ namespace SilentOrbit.AutoExecuter
             if (r.Commands.Count == 0)
             {
                 r.ExitCode = -1;
-                Console.WriteLine("Warning: no commands for rule");
+                ColorConsole.WriteLine("Warning: no commands for rule", ConsoleColor.Red);
                 return;
             }
 
@@ -40,15 +40,21 @@ namespace SilentOrbit.AutoExecuter
             psi.Arguments = r.Commands[0].Arguments;
             psi.WorkingDirectory = basePath;
             psi.RedirectStandardInput = true;
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
             psi.UseShellExecute = false;
 
-            Console.WriteLine("Executing Interpreter: " + psi.FileName + " " + psi.Arguments);
+            ColorConsole.WriteLine("Executing Interpreter: " + psi.FileName + " " + psi.Arguments, ConsoleColor.DarkGray);
 
             Process p = new Process();
             p.StartInfo = psi;
+            p.ErrorDataReceived += HandleErrorDataReceived;
+            p.OutputDataReceived += HandleOutputDataReceived;
 
             try{
                 p.Start();
+                p.BeginErrorReadLine();
+                p.BeginOutputReadLine();
 
                 //Pass remaining commands to pipe
                 using(TextWriter tw = p.StandardInput)
@@ -61,7 +67,7 @@ namespace SilentOrbit.AutoExecuter
                             first = false;
                             continue;
                         }
-
+                        ColorConsole.WriteLine(c.Command + " " + c.Arguments, ConsoleColor.DarkGray);
                         tw.WriteLine(c.Command + " " + c.Arguments);
                     }
                 }
@@ -70,12 +76,12 @@ namespace SilentOrbit.AutoExecuter
                 if(p.ExitCode != 0)
                 {
                     r.ExitCode = p.ExitCode;
-                    Console.WriteLine("Failed: " + p.ExitCode);
+                    ColorConsole.WriteLine("Failed: " + p.ExitCode, ConsoleColor.Red);
                 }
             }
             catch(Exception e)
             {
-                Console.WriteLine("Failed: " + e.Message);
+                ColorConsole.WriteLine("Failed: " + e.Message, ConsoleColor.Red);
                 r.ExitCode = -1;
             }
 
@@ -89,13 +95,20 @@ namespace SilentOrbit.AutoExecuter
                 psi.FileName = args.Command;
                 psi.Arguments = args.Arguments;
                 psi.WorkingDirectory = basePath;
+                psi.RedirectStandardInput = true;
+                psi.RedirectStandardOutput = true;
+                psi.RedirectStandardError = true;
 
-                Console.WriteLine("Executing: " + psi.FileName + " " + psi.Arguments);
+                ColorConsole.WriteLine("Executing: " + psi.FileName + " " + psi.Arguments, ConsoleColor.DarkGray);
                 Process p = new Process();
                 p.StartInfo = psi;
+                p.ErrorDataReceived += HandleErrorDataReceived;
+                p.OutputDataReceived += HandleOutputDataReceived;
 
                 try{
                     p.Start();
+                    p.BeginErrorReadLine();
+                    p.BeginOutputReadLine();
                     p.WaitForExit();
                     if(p.ExitCode != 0)
                         r.ExitCode = p.ExitCode;
@@ -106,8 +119,22 @@ namespace SilentOrbit.AutoExecuter
                     r.ExitCode = -1;
                 }
                 if(r.ExitCode != 0)
-                    Console.WriteLine("Failed: " + p.ExitCode);
+                    ColorConsole.WriteLine("Failed: " + p.ExitCode, ConsoleColor.Red);
             }
+        }
+
+        void HandleErrorDataReceived (object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data == null)
+                return;
+            ColorConsole.WriteLine("\t" + e.Data, ConsoleColor.Red);
+        }
+
+        void HandleOutputDataReceived (object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data == null)
+                return;
+            ColorConsole.WriteLine("\t" + e.Data, ConsoleColor.Blue);
         }
     }
 }

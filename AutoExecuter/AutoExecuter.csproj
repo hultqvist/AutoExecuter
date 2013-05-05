@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DBFFA7D0-F7D5-47E1-9BA0-C17F3FE2428E}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SilentOrbit.AutoExecutioner</RootNamespace>
+    <RootNamespace>SilentOrbit.AutoExecuter</RootNamespace>
     <AssemblyName>AutoExecuter</AssemblyName>
     <StartupObject>SilentOrbit.AutoExecuter.MainClass</StartupObject>
   </PropertyGroup>
@@ -18,7 +18,7 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Commandlineparameters>/home/peter/Projekt/AutoExecutioner/Test/test.rules</Commandlineparameters>
+    <Commandlineparameters>/home/peter/Projekt/Email/src/WebClient/build.autoex</Commandlineparameters>
     <ConsolePause>false</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
@@ -29,6 +29,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -42,7 +43,8 @@
     <Compile Include="RuleData\Rule.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="Watcher.cs" />
-    <Compile Include="Executioner.cs" />
+    <Compile Include="Executer.cs" />
+    <Compile Include="ColorConsole.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

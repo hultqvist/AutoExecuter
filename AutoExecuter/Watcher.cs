@@ -8,7 +8,7 @@ namespace SilentOrbit.AutoExecuter
 {
     public class Watcher
     {
-        readonly Executioner exec;
+        readonly Executer exec;
         readonly FileSystemWatcher rulesWatcher;
         readonly string rulesPath;
         int rulesPathExitCode = -1;
@@ -21,7 +21,7 @@ namespace SilentOrbit.AutoExecuter
         /// <summary>
         /// Last time we run any commands, files modified after this time will trigger a new run
         /// </summary>
-        DateTime lastRun = DateTime.MinValue;
+        DateTime lastRun = DateTime.MaxValue;
 
         List<FileSystemWatcher> watchers = new List<FileSystemWatcher>();
 
@@ -31,7 +31,7 @@ namespace SilentOrbit.AutoExecuter
 
             string dir = Path.GetDirectoryName(path);
 
-            exec = new Executioner(dir);
+            exec = new Executer(dir);
 
             rulesWatcher = new FileSystemWatcher(dir);
             rulesWatcher.Changed += RulesChanged;
@@ -57,10 +57,12 @@ namespace SilentOrbit.AutoExecuter
 
         public void Run()
         {
+            LoadRules();
+
             //Start watching
             while (true)
             {
-                //Console.WriteLine("Checking...");
+                //ColorConsole.WriteLine("Checking...");
                 DateTime lastCheck = FileSystem.GetUtcNow(Path.GetDirectoryName(rulesPath));
                 int executed = 0;
 
@@ -71,11 +73,6 @@ namespace SilentOrbit.AutoExecuter
                     executed += 1;
                 }
 
-                //Count failures
-                int failed = 0;
-                if (rulesPathExitCode != 0)
-                    failed += 1;
-
                 //Scan all filters
                 foreach (Rule r in rules)
                 {
@@ -84,21 +81,28 @@ namespace SilentOrbit.AutoExecuter
 
                     exec.Run(r);
                     executed += 1;
-
-                    if (r.ExitCode != 0)
-                        failed += 1;
                 }
 
                 lastRun = lastCheck;
 
+                //Count failures in all rules, also those not executed
+                int failed = 0;
+                if (rulesPathExitCode != 0)
+                    failed += 1;
+                foreach (Rule r in rules)
+                {
+                    if (r.ExitCode != 0)
+                        failed += 1;
+                }
+
                 //Print result
                 if(executed > 0)
                 {
-                    //Console.WriteLine("Last run " + lastRun.ToString("HH:mm:ss"));
+                    //ColorConsole.WriteLine("Last run " + lastRun.ToString("HH:mm:ss"));
                     if(failed == 0)
-                        Console.WriteLine("Successfully executed " + executed + " rules");
+                        ColorConsole.WriteLine("Successfully executed all rules", ConsoleColor.DarkGreen);
                     else
-                        Console.WriteLine("Failed " + failed + " out of " + executed + " executed rules");
+                        ColorConsole.WriteLine("Failed " + failed + " rules", ConsoleColor.Red);
                 }
 
                 //Wait for newt
@@ -111,7 +115,7 @@ namespace SilentOrbit.AutoExecuter
 
         void LoadRules()
         {
-            Console.WriteLine("Loading rules: " + rulesPath);
+            ColorConsole.WriteLine("Loading rules: " + rulesPath, ConsoleColor.DarkGray);
             try
             {
                 rules = RulesLoader.FromFile(rulesPath);
@@ -136,6 +140,13 @@ namespace SilentOrbit.AutoExecuter
                 {
                     if(watched.Contains(f.Path))
                         continue;
+
+                    if (Directory.Exists(f.Path) == false)
+                    {
+                        ColorConsole.WriteLine("Directory not found: " + f.Path, ConsoleColor.Red);
+                        continue;
+                    }
+
                     var w = new FileSystemWatcher(f.Path);
                     w.IncludeSubdirectories = f.IncludeSubdirectories;
                     w.Changed += FileSystemEvent;
@@ -154,8 +165,8 @@ namespace SilentOrbit.AutoExecuter
                 return;
             if (e.OldName == FileSystem.TimeTestFilename)
                 return;
-            //Console.WriteLine(e.FullPath);
-            //Console.WriteLine(e.OldFullPath);
+            //ColorConsole.WriteLine(e.FullPath);
+            //ColorConsole.WriteLine(e.OldFullPath);
             check.Set();
         }
 
@@ -163,7 +174,7 @@ namespace SilentOrbit.AutoExecuter
         {
             if (e.Name == FileSystem.TimeTestFilename)
                 return;
-            //Console.WriteLine(e.FullPath);
+            //ColorConsole.WriteLine(e.FullPath);
             check.Set();
         }
     }

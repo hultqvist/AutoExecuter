@@ -34,17 +34,15 @@ namespace SilentOrbit.AutoExecuter
                 if (line == null) //EOF
                     return list;
 
-                string trimLine = line.Trim(' ', '\t');
-                if (trimLine == "") //End of rule
-                {
-                    r = null;
-                    continue;
-                }
+                if (line.StartsWith("#")) //to ignore first #!/... in autoex script file
+                    continue; //Ignore comments
 
-                if (line.StartsWith("#")) //to ignore first #!/...
+                string lineTrim = line.Trim(' ', '\t');
+                if (lineTrim.StartsWith("//"))
                     continue; //Ignore comments
-                if (trimLine.StartsWith("//"))
-                    continue; //Ignore comments
+
+                if (lineTrim == "")
+                    continue;
 
                 if (r == null)
                 {
@@ -56,7 +54,10 @@ namespace SilentOrbit.AutoExecuter
                     ParseCommand(r, line);
                 else {
                     if (r.Commands.Count != 0)
-                        throw new FormatException("All paths must be written before the commands, rule sets must be separated with an empty line");
+                    {
+                        r = new Rule();
+                        list.Add(r);
+                    }
                     ParsePath(r, line, path);
                 }
 

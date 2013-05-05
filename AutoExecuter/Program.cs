@@ -11,11 +11,11 @@ namespace SilentOrbit.AutoExecuter
         {
             if (args.Length != 1)
             {
-                Console.WriteLine("Usage: AutoExecuter.exe configfile.txt");
+                ColorConsole.WriteLine("Usage: AutoExecuter.exe configfile.txt", ConsoleColor.Yellow);
                 return -1;
             }
 
-            Console.WriteLine("AutoExecuter starting...");
+            ColorConsole.WriteLine("AutoExecuter starting...", ConsoleColor.Gray);
 
             //Rule for rules file
             string path = Path.GetFullPath(args [0]);
