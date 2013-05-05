@@ -89,6 +89,10 @@ namespace SilentOrbit.AutoExecuter
                         path = Path.Combine(rulesDir, path);
                     pf.Path = Path.GetFullPath(path);
                     pf.Pattern = f.Substring(lastsep + 1);
+
+                    //If last "/" or "\" is double then include all subdirectories in search
+                    if (lastsep > 0 && f [lastsep - 1] == Path.DirectorySeparatorChar)
+                        pf.IncludeSubdirectories = true;
                 }
                 r.Files.Add(pf);
             }

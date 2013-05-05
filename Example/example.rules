@@ -18,3 +18,7 @@ Source/*.css
 Combined.css
 	cp Combined.css final.css
 	cp Combined.css final2.css
+
+//If the last directory separator, the one before the file pattern is double
+//Then all subdirectories will be watched for the file
+www//*.html

@@ -49,7 +49,10 @@ namespace SilentOrbit.AutoExecuter
                 var watched = filter.Watched;
                 filter.Watched = new List<string>();
 
-                string[] files = Directory.GetFiles(filter.Path, filter.Pattern, SearchOption.AllDirectories);
+                SearchOption options = SearchOption.TopDirectoryOnly;
+                if (filter.IncludeSubdirectories)
+                    options = SearchOption.AllDirectories;
+                string[] files = Directory.GetFiles(filter.Path, filter.Pattern, options);
                 foreach (string file in files)
                 {
                     watched.Remove(file);
