@@ -73,7 +73,9 @@ namespace SilentOrbit.AutoExecuter
                 }
 
                 p.WaitForExit();
-                if(p.ExitCode != 0)
+                if(p.ExitCode == 0)
+                    ColorConsole.WriteLine("Last succeeded", ConsoleColor.Green);
+                else
                 {
                     r.ExitCode = p.ExitCode;
                     ColorConsole.WriteLine("Failed: " + p.ExitCode, ConsoleColor.Red);
@@ -118,7 +120,9 @@ namespace SilentOrbit.AutoExecuter
                     Console.Error.WriteLine(e.Message);
                     r.ExitCode = -1;
                 }
-                if(r.ExitCode != 0)
+                if(p.ExitCode == 0)
+                    ColorConsole.WriteLine("Last succeeded", ConsoleColor.Green);
+                else
                     ColorConsole.WriteLine("Failed: " + p.ExitCode, ConsoleColor.Red);
             }
         }
