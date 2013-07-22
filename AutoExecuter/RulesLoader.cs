@@ -60,6 +60,10 @@ namespace SilentOrbit.AutoExecuter
 					ParseCommand(r, line);
 				else
 				{
+					//Skip comments
+					if (line[0] == '#')
+						continue;
+
 					if (r.Commands.Count != 0)
 					{
 						r = new Rule();
