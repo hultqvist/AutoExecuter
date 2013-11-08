@@ -9,9 +9,9 @@ namespace SilentOrbit.AutoExecuter
 	{
 		public static int Main(string[] args)
 		{
-			if (args.Length != 1)
+			if (args.Length < 1 || args.Length > 2)
 			{
-				ColorConsole.WriteLine("Usage: AutoExecuter.exe configfile.txt", ConsoleColor.Yellow);
+				ColorConsole.WriteLine("Usage: AutoExecuter.exe configfile.txt [once]", ConsoleColor.Yellow);
 				return -1;
 			}
 
@@ -19,10 +19,11 @@ namespace SilentOrbit.AutoExecuter
 
 			//Rule for rules file
 			string path = Path.GetFullPath(args[0]);
-			var watch = new Watcher(path);
+			bool once = args.Length > 1 && args[1] == "once";
+			var watch = new Watcher(path, once);
 			watch.Run();
 
-			return 0;
+			return watch.ExitCode;
 		}
 	}
 }

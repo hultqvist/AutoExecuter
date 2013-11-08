@@ -11,6 +11,10 @@ namespace SilentOrbit.AutoExecuter
 		readonly Executer exec;
 		readonly FileSystemWatcher rulesWatcher;
 		readonly string rulesPath;
+		/// <summary>
+		/// Only run the scripts once then exit
+		/// </summary>
+		readonly bool once;
 		int rulesPathExitCode = -1;
 		Rules rules;
 		/// <summary>
@@ -23,9 +27,12 @@ namespace SilentOrbit.AutoExecuter
 		DateTime lastRun = DateTime.MaxValue;
 		List<FileSystemWatcher> watchers = new List<FileSystemWatcher>();
 
-		public Watcher(string path)
+		public int ExitCode { get; private set; }
+
+		public Watcher(string path, bool once)
 		{
-			rulesPath = path;
+			this.rulesPath = path;
+			this.once = once;
 
 			string dir = Path.GetDirectoryName(path);
 
@@ -101,6 +108,12 @@ namespace SilentOrbit.AutoExecuter
 						ColorConsole.WriteLine("Successfully executed all rules", ConsoleColor.DarkGreen);
 					else
 						ColorConsole.WriteLine("Failed " + failed + " rules", ConsoleColor.Red);
+
+					if (once)
+					{
+						ExitCode = failed;
+						return;
+					}
 				}
 
 				//Wait for newt
@@ -166,8 +179,8 @@ namespace SilentOrbit.AutoExecuter
 				return;
 			if (e.OldName == FileSystem.TimeTestFilename)
 				return;
-			//ColorConsole.WriteLine(e.FullPath);
-			//ColorConsole.WriteLine(e.OldFullPath);
+			//ColorConsole.WriteLine(e.FullPath, ConsoleColor.DarkCyan);
+			//ColorConsole.WriteLine(e.OldFullPath, ConsoleColor.DarkCyan);
 			check.Set();
 		}
 
@@ -175,7 +188,7 @@ namespace SilentOrbit.AutoExecuter
 		{
 			if (e.Name == FileSystem.TimeTestFilename)
 				return;
-			//ColorConsole.WriteLine(e.FullPath);
+			//ColorConsole.WriteLine(e.FullPath, ConsoleColor.DarkCyan);
 			check.Set();
 		}
 	}

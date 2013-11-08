@@ -101,6 +101,7 @@ namespace SilentOrbit.AutoExecuter
 				psi.RedirectStandardInput = true;
 				psi.RedirectStandardOutput = true;
 				psi.RedirectStandardError = true;
+				psi.UseShellExecute = false;
 
 				ColorConsole.WriteLine("Executing: " + psi.FileName + " " + psi.Arguments, ConsoleColor.DarkGray);
 				Process p = new Process();
