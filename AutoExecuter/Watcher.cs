@@ -81,11 +81,16 @@ namespace SilentOrbit.AutoExecuter
 				//Scan all filters
 				foreach (Rule r in rules.List)
 				{
-					if (FileSystem.Modified(r, lastRun) == false)
-						continue;
+					if (FileSystem.Modified(r, lastRun))
+					{
+						exec.Run(r);
+						executed += 1;
 
-					exec.Run(r);
-					executed += 1;
+						//Run all once if at startup
+						if (lastRun == DateTime.MinValue && rules.RunAllAtStart)
+							continue;
+						break; //Start over with new lastCheck
+					}
 				}
 
 				lastRun = lastCheck;
